@@ -1,4 +1,6 @@
-def validateGames(games):
+def solve():
+    games = open('puzzle2.txt', 'r')
+
     res = 0
     for game in games:
         array = game.split()
@@ -24,8 +26,5 @@ def validateGames(games):
         
     return res
 
-
-file = open('puzzle2.txt', 'r')
-games = file.readlines()
-res = validateGames(games)
+res = solve()
 print(res)

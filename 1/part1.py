@@ -1,4 +1,6 @@
-def sumTokens(tokens):
+def solve():
+    tokens = open('puzzle1.txt', 'r').read().splitlines()
+    
     res = 0
     for token in tokens:
         left = 0
@@ -13,7 +15,5 @@ def sumTokens(tokens):
 
     return res
 
-file = open('puzzle1.txt', 'r')
-tokens = file.readlines()
-
-print(sumTokens(tokens))
+res = solve()
+print(res)
