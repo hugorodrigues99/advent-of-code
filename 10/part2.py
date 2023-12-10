@@ -1,24 +1,12 @@
-EAST = "east"
-WEST = "west"
-NORTH = "north"
-SOUTH = "south"
-
-OPPOSITE_DIRECTIONS = {
-    EAST: WEST,
-    WEST: EAST,
-    NORTH: SOUTH,
-    SOUTH: NORTH
-}
-
-SYMBOLS_DIRECTIONS = {
-    "|": [NORTH, SOUTH],
-    "-": [EAST, WEST],
-    "L": [NORTH, EAST],
-    "J": [NORTH, WEST],
-    "7": [SOUTH, WEST],
-    "F": [SOUTH, EAST],
+PIPES_POSITIONS = {
+    "|": [(-1, 0), (1, 0)],
+    "-": [(0, 1), (0, -1)],
+    "L": [(-1, 0), (0, 1)],
+    "J": [(-1, 0), (0, -1)],
+    "7": [(1, 0), (0, -1)],
+    "F": [(1, 0), (0, 1)],
     ".": [],
-    "S": [NORTH, SOUTH, EAST, WEST]
+    "S": [(-1, 0), (1, 0), (0, 1), (0, -1)]
 }
 
 def solve():
@@ -53,36 +41,36 @@ def bfs(startRow, startCol, matrix):
             visited.add((i, j))
             neighbors = getNeighbors(i, j, matrix)
 
-            for neighborRow, neighborCol, neighborDirection in neighbors:
+            for neighborRow, neighborCol in neighbors:
                 if (neighborRow, neighborCol) in visited:
                     continue
 
-                if canTakeNeighbor(i, j, neighborRow, neighborCol, neighborDirection, matrix):
+                if canTakeNeighbor(i, j, neighborRow, neighborCol, matrix):
                     queue.append([neighborRow, neighborCol])
 
     return visited
 
 def getNeighbors(i, j, matrix):
     neighbors = []
-    directions = [[0, 1, EAST], [0, -1, WEST], [1, 0, SOUTH], [-1, 0, NORTH]]
+    directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
     
-    for neighborRow, neighborCol, neighborDirection in directions:
+    for neighborRow, neighborCol in directions:
         newRow = i + neighborRow
         newCol = j + neighborCol
 
         if 0 <= newRow < len(matrix) and 0 <= newCol < len(matrix[0]):
-            neighbors.append([newRow, newCol, neighborDirection])
+            neighbors.append([newRow, newCol])
 
     return neighbors
 
-def canTakeNeighbor(i, j, neighborRow, neighborCol, neigborDirection, matrix):
-    currentSymbol = matrix[i][j]
-    neighborSymbol = matrix[neighborRow][neighborCol]
+def canTakeNeighbor(i, j, neighborRow, neighborCol, matrix):
+    currentPipe = matrix[i][j]
+    neighborPipe = matrix[neighborRow][neighborCol]
 
-    currentDirections = SYMBOLS_DIRECTIONS[currentSymbol]
-    neighborDirections = SYMBOLS_DIRECTIONS[neighborSymbol]
+    positionsConnectedToCurrent = [(i + row, j + col) for (row, col) in PIPES_POSITIONS[currentPipe]]
+    positionsConnectedToNeighbor = [(neighborRow + row, neighborCol + col) for (row, col) in PIPES_POSITIONS[neighborPipe]]
 
-    return neigborDirection in currentDirections and OPPOSITE_DIRECTIONS[neigborDirection] in neighborDirections
+    return (neighborRow, neighborCol) in positionsConnectedToCurrent and (i, j) in positionsConnectedToNeighbor
 
 def countEnclosedTiles(matrix, loopTiles):
     enclosedTilesCounter = 0
