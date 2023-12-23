@@ -16,6 +16,7 @@ def solve(filename):
     graph = buildGraph(points, matrix)
     return dfs(startPoint, endPoint, graph, set())
 
+# Edge Contraction
 def getPoints(matrix):
     startPoint = (0, matrix[0].index("."))
     endPoint = (len(matrix) - 1, matrix[-1].index("."))
